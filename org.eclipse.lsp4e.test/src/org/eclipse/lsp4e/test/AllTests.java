@@ -9,6 +9,7 @@
  * Contributors:
  *  Michał Niewrzał (Rogue Wave Software Inc.) - initial implementation
  *  Mickael Istria (Red Hat Inc.) - Added some suites
+ *  Max Bureck (Fraunhofer FOKUS) - Added test for Markdown link parsing
  *******************************************************************************/
 package org.eclipse.lsp4e.test;
 
@@ -32,6 +33,7 @@ import org.eclipse.lsp4e.test.format.FormatTest;
 import org.eclipse.lsp4e.test.highlight.HighlightTest;
 import org.eclipse.lsp4e.test.hover.HoverTest;
 import org.eclipse.lsp4e.test.operations.codelens.LSPCodeMiningTest;
+import org.eclipse.lsp4e.test.operations.hover.MarkdownLanguageWithLinksTest;
 import org.eclipse.lsp4e.test.outline.EditorToOutlineAdapterFactoryTest;
 import org.eclipse.lsp4e.test.outline.SymbolsLabelProviderTest;
 import org.eclipse.lsp4e.test.references.FindReferencesTest;
@@ -73,7 +75,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	EditorToOutlineAdapterFactoryTest.class,
 	LanguageServerWrapperTest.class,
 	ColorTest.class,
-	LSPCodeMiningTest.class
+	LSPCodeMiningTest.class,
+	MarkdownLanguageWithLinksTest.class
 })
 public class AllTests {
 

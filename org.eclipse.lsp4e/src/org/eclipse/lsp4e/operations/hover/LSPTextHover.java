@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 Red Hat Inc. and others.
+ * Copyright (c) 2016, 2018, 2019 Red Hat Inc. and others.
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
@@ -11,6 +11,7 @@
  *  Lucas Bullen (Red Hat Inc.) - Bug 508458 - Add support for codelens
  *  Angelo Zerr <angelo.zerr@gmail.com> - Bug 525602 - LSBasedHover must check if LS have codelens capability
  *  Lucas Bullen (Red Hat Inc.) - [Bug 517428] Requests sent before initialization
+ *  Max Bureck (Fraunhofer FOKUS) - Bug 558573 - Bare hyperlinks in Markdown for hovers should be converted to clickable links
  *******************************************************************************/
 package org.eclipse.lsp4e.operations.hover;
 
@@ -46,7 +47,6 @@ import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.MarkedString;
 import org.eclipse.lsp4j.MarkupContent;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
-import org.eclipse.mylyn.wikitext.markdown.MarkdownLanguage;
 import org.eclipse.mylyn.wikitext.parser.MarkupParser;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -61,7 +61,7 @@ public class LSPTextHover implements ITextHover, ITextHoverExtension {
 	private static final String HEAD = "<head>"; //$NON-NLS-1$
 
 
-	private static final MarkupParser MARKDOWN_PARSER = new MarkupParser(new MarkdownLanguage());
+	private static final MarkupParser MARKDOWN_PARSER = new MarkupParser(new MarkdownLanguageWithLinks());
 
 
 	private IRegion lastRegion;
