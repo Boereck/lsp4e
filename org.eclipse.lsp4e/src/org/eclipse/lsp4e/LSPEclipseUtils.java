@@ -135,7 +135,10 @@ public class LSPEclipseUtils {
 	}
 
 	public static ITextEditor getActiveTextEditor() {
-		IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		IEditorPart editorPart = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow()
+				.getActivePage()
+				.getActiveEditor();
 		if(editorPart instanceof ITextEditor) {
 			return (ITextEditor) editorPart;
 		} else if (editorPart instanceof MultiPageEditorPart) {
