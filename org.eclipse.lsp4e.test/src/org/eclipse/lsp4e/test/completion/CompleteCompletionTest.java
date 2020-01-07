@@ -26,6 +26,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -43,9 +46,11 @@ import org.eclipse.lsp4e.LanguageServiceAccessor.LSPDocumentInfo;
 import org.eclipse.lsp4e.operations.completion.LSCompletionProposal;
 import org.eclipse.lsp4e.test.TestUtils;
 import org.eclipse.lsp4e.tests.mock.MockLanguageServer;
+import org.eclipse.lsp4j.Command;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionItemKind;
 import org.eclipse.lsp4j.CompletionList;
+import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.lsp4j.InsertTextFormat;
 import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.Range;
@@ -135,6 +140,27 @@ public class CompleteCompletionTest extends AbstractCompletionTest {
 		LSCompletionProposal lsCompletionProposal = (LSCompletionProposal)proposals[0];
 		lsCompletionProposal.apply(viewer, '\n', 0, 0);
 		assertEquals(new Point("FirstClass".length(), 0), lsCompletionProposal.getSelection(viewer.getDocument()));
+	}
+
+	@Test
+	public void testCommandExecution() throws CoreException, InvocationTargetException, InterruptedException, ExecutionException, TimeoutException {
+		CompletionItem completionItem = createCompletionItem("Bla", CompletionItemKind.Class);
+		List<Object> commandArguments = Arrays.asList("foo");
+		completionItem.setCommand(new Command("TestCommand", MockLanguageServer.SUPPORTED_COMMAND_ID, commandArguments));
+
+		MockLanguageServer.INSTANCE.setCompletionList(new CompletionList(false, Arrays.asList(completionItem)));
+		
+		ITextViewer viewer = TestUtils.openTextViewer(TestUtils.createUniqueTestFile(project, ""));
+		
+		ICompletionProposal[] proposals = contentAssistProcessor.computeCompletionProposals(viewer, 0);
+		assertEquals(1, proposals.length);
+
+		LSCompletionProposal lsCompletionProposal = (LSCompletionProposal)proposals[0];
+		lsCompletionProposal.apply(viewer, '\n', 0, 0);
+		
+		ExecuteCommandParams executedCommand = MockLanguageServer.INSTANCE.getWorkspaceService().getExecutedCommand().get(2, TimeUnit.SECONDS);
+		assertEquals(MockLanguageServer.SUPPORTED_COMMAND_ID, executedCommand.getCommand());
+		assertEquals(commandArguments, executedCommand.getArguments());
 	}
 
 	@Test
